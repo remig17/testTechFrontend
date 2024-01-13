@@ -1,0 +1,66 @@
+<html>
+  <body>
+    <form action="/">
+      <input id="email" type="text" value="" />
+      <input id="nom" type="text" value="" />
+      <input id="prenom" type="text" value="" />
+    </form>
+
+    <pre id="json"></pre>
+
+    <script type="text/javascript">
+      class State {
+        constructor(initialState) {
+          this.state = { ...initialState };
+          this.callbacks = [];
+        }
+
+        getState() {
+          return { ...this.state };
+        }
+
+        setState(newState) {
+          this.state = { ...this.state, ...newState };
+          this.notify();
+        }
+
+        onChange(callback) {
+          this.callbacks.push(callback);
+        }
+
+        notify() {
+          this.callbacks.forEach((callback) => callback(this.getState()));
+        }
+      }
+
+      /* DO NOT CHANGE ANYTHING UNDER THIS LINE */
+      const initialState = {
+        email: "david@knx-lab.com",
+        nom: "Quenet",
+        prenom: "David",
+      };
+      var state = new State(initialState);
+
+      ["email", "prenom", "nom"].forEach((key) => {
+        const htmlElement = document.getElementById(key);
+        htmlElement.value = initialState[key];
+        htmlElement.addEventListener("input", () => {
+          const newState = {};
+          newState[key] = htmlElement.value;
+          state.setState(newState);
+        });
+      });
+
+      const jsonHtmlElement = document.getElementById("json");
+      jsonHtmlElement.innerHTML = JSON.stringify(state.getState(), null, 4);
+      state.onChange((state) => {
+        jsonHtmlElement.innerHTML = JSON.stringify(state, null, 4);
+      });
+
+      /* Do not remove this */
+      state.onChange((state) => {
+        console.log(state);
+      });
+    </script>
+  </body>
+</html>
